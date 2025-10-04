@@ -19,8 +19,8 @@ A video guide for this project can be found here: https://www.loom.com/share/you
 
 1. **Clone the repository**:
    ```bash
-   git clone <repo_url>
-   cd <repo_folder>
+   git clone https://github.com/bsushsiwba/pyqt-audio-services
+   cd pyqt-audio-services
    ```
 
 2. **Create and activate a virtual environment**:
