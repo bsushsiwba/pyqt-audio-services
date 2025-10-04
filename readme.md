@@ -2,7 +2,7 @@
 
 This project is a **real-time transcription tool** built with **PyQt5** and **OpenAI Whisper**. It allows you to capture audio from a selected input device and transcribe it live. Additionally, it integrates with various cloud services for transcription and translation, including Google Cloud, Azure, and iFlyTech XFYun.
 
-A video guide for this project can be found here: https://www.loom.com/share/your-video-id
+A video guide for this project can be found here: https://bsushsiwba.neetorecord.com/watch/096bbda9-1c88-49f8-b169-9481def975c1
 
 ---
 
@@ -25,13 +25,13 @@ A video guide for this project can be found here: https://www.loom.com/share/you
 
 2. **Create and activate a virtual environment**:
    ```bash
-   python --version  # Ensure it's Python 3.9.10
-   python -m venv venv
+   python3.9 --version  # Ensure it's Python 3.9.10
+   python3.9 -m venv .venv
    # Activate the virtual environment
    # On macOS/Linux:
-   source venv/bin/activate
+   source .venv/bin/activate
    # On Windows:
-   venv\Scripts\activate
+   .\venv\Scripts\Activate.ps1
    ```
 
 3. **Install required dependencies**:
