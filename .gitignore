@@ -1,0 +1,46 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+transcribe_venv/
+cloud_transcription/various Cloud Services/
+Development_test/
+.env
+Senv/
+
+# Whisper model cache
+.cache/
+*.pt
+
+# Audio recordings
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+output.wav
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# PyCharm / VSCode
+.idea/
+.vscode/
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+temp_req.txt

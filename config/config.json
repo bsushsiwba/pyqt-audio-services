@@ -1,0 +1,95 @@
+{
+    "main_window": {
+        "x": 805,
+        "y": 266,
+        "w": 708,
+        "h": 486
+    },
+    "window3": {
+        "x": 0,
+        "y": 0,
+        "w": 477,
+        "h": 270
+    },
+    "window2": {
+        "x": 0,
+        "y": 0,
+        "w": 912,
+        "h": 417
+    },
+    "window1": {
+        "x": 0,
+        "y": 0,
+        "w": 592,
+        "h": 540
+    },
+    "window4": {
+        "x": 11,
+        "y": 45,
+        "w": 609,
+        "h": 321
+    },
+    "window5": {
+        "x": 0,
+        "y": 0,
+        "w": 460,
+        "h": 418
+    },
+    "window6": {
+        "x": 0,
+        "y": 0,
+        "w": 408,
+        "h": 263
+    },
+    "window7": {
+        "x": 151,
+        "y": 189,
+        "w": 503,
+        "h": 392
+    },
+    "window7B": {
+        "x": 303,
+        "y": 162,
+        "w": 1327,
+        "h": 720
+    },
+    "window7C": {
+        "x": 0,
+        "y": 0,
+        "w": 601,
+        "h": 591
+    },
+    "window8": {
+        "x": 912,
+        "y": 420,
+        "w": 601,
+        "h": 591
+    },
+    "settings": {
+        "x": 11,
+        "y": 45,
+        "w": 660,
+        "h": 525
+    },
+    "theme": "dark",
+    "font": "Bahnschrift Light Condensed",
+    "font_size": 11,
+    "weight": "ExtraLight",
+    "italic": false,
+    "color": "#000000",
+    "input_win1": {
+        "index": 24,
+        "name": "Voicemeeter Out B3 (VB-Audio Voicemeeter VAIO)",
+        "channels": 8
+    },
+    "input_win4": {
+        "index": 24,
+        "name": "Voicemeeter Out B3 (VB-Audio Voicemeeter VAIO)",
+        "channels": 1
+    },
+    "window2_prompt": "polish the text,dont ask any further questions",
+    "window5_prompt": "polish this text ",
+    "window3_prompt": "translate the following text in to the provided language\n and make is humerous",
+    "window7B_prompt": "extract questions and write \"from transcription \" in the end of question",
+    "window6_prompt": "change the sentence to humourous sense"
+}
