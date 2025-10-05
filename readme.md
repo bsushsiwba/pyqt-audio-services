@@ -1,6 +1,6 @@
 # Live Transcriber
 
-This project is a **real-time transcription tool** built with **PyQt5** and **OpenAI Whisper**. It allows you to capture audio from a selected input device and transcribe it live. Additionally, it integrates with various cloud services for transcription and translation, including Google Cloud, Azure, and iFlyTech XFYun.
+This project is a **real-time transcription tool** built with **PyQt5** and **Cloud Transcription Services**. It allows you to capture audio from a selected input device and transcribe it live. Additionally, it integrates with various cloud services for transcription and translation, including Google Cloud, Azure, and iFlyTech XFYun.
 
 A video guide for this project can be found here: https://bsushsiwba.neetorecord.com/watch/096bbda9-1c88-49f8-b169-9481def975c1
 

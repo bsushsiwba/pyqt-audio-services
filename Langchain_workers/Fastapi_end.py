@@ -200,7 +200,7 @@ TRANSCRIPTS = {}
 summary_tasks = {}  # task_id: {"status": "Pending/Completed", "summary": str}
 
 # Simulated background summary function
-def generate_summary(task_id: str,diarized:str,language:str):
+def generate_summary(task_id: str,diarized:str,language:str,prompt:str):
     """Simulate time-consuming summary generation"""
     
 
@@ -211,9 +211,9 @@ def generate_summary(task_id: str,diarized:str,language:str):
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": f"You have to summarize the paragrpah which will be provided to you as meeting of meetings in the following language:{language}"},
-            {"role": "user", "content": f"Summarize this text: {diarized}"}
-        ],
-        max_tokens=300
+            {"role": "user", "content":  f"{prompt} here is the diarization {diarized}"}
+        ]
+        #max_tokens=300
     )
 
     # Extract the reply
@@ -224,6 +224,7 @@ def generate_summary(task_id: str,diarized:str,language:str):
 class summary_trans(BaseModel):
     diarized:str
     language:str
+    prompt:str
 # --- START SUMMARY ---
 @app.post("/start_summary")
 async def start_summary(background_tasks: BackgroundTasks,sum:summary_trans):
@@ -232,7 +233,7 @@ async def start_summary(background_tasks: BackgroundTasks,sum:summary_trans):
 
 
     # Run summary in background
-    background_tasks.add_task(generate_summary, task_id,sum.diarized,sum.language)
+    background_tasks.add_task(generate_summary, task_id,sum.diarized,sum.language,sum.prompt)
     
     return {"task_id": task_id, "status": "Started"}
 

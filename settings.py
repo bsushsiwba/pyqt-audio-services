@@ -252,8 +252,7 @@ class ClickableTextEdit(QTextEdit):
         self.click_callback = click_callback  # store callback
         self.setStyleSheet("""
             QTextEdit {
-                font-size: 14px;
-                padding: 20px;
+                padding: 15px;
                 border: 1px solid gray;
             }
             QTextEdit:hover {
@@ -291,7 +290,7 @@ class FeatureWindow8(QWidget):
 
         # --- Layouts ---
         layout = QVBoxLayout()
-
+        
         # Language dropdown (for summary only)
         self.lang_label = QLabel("Select Summary Language")
         layout.addWidget(self.lang_label)
@@ -313,20 +312,25 @@ class FeatureWindow8(QWidget):
             "Arabic": "ar-EG"
         }
         layout.addWidget(self.language_dropdown)
-
+        splitter = QSplitter(Qt.Vertical)
         # Transcript box (just loads from transcripts.txt)
         self.transcript_box = ClickableTextEdit(
             "Meeting Diarized Transcript (Editable speaker names)", 
             click_callback=self.on_click
         )
-        layout.addWidget(self.transcript_box)
-
+        splitter.addWidget(self.transcript_box)
+        self.text_box = QTextEdit()
+        self.text_box.setPlaceholderText("Type Your Prompt for summerization")
+        self.text_box.setWordWrapMode(QTextOption.WordWrap)  # enables wrapping
+        splitter.addWidget(self.text_box)
         # Summary box (API-based)
         self.summary_box = ClickableTextEdit(
             "Meeting Summary (Minutes)", 
             click_callback=self.on_click
         )
-        layout.addWidget(self.summary_box)
+        splitter.addWidget(self.summary_box)
+        splitter.setSizes([800, 100,100])
+        layout.addWidget(splitter)
 
         # Download buttons
         button_layout = QHBoxLayout()
@@ -366,6 +370,12 @@ class FeatureWindow8(QWidget):
             if not self.current_text.strip():
                 self.summary_box.append("⚠️ No transcript available for summary...")
                 return
+            if not self.text_box.toPlainText().strip():
+                self.summary_box.setPlainText("⚠️ Please enter a prompt for summary")
+                return
+            else:
+            # Clear any previous warning text before starting summary
+                self.summary_box.clear()
 
             # Start summary request
             self.summary_running = True
@@ -375,10 +385,11 @@ class FeatureWindow8(QWidget):
             try:
                 selected_lang_name = self.language_dropdown.currentText()
                 selected_lang_code = self.language_map.get(selected_lang_name, "en-US")
+                prompts=self.text_box.toPlainText()
 
                 resp = requests.post(
                     "http://127.0.0.1:8000/start_summary",
-                    json={"diarized": self.current_text, "language": selected_lang_name}
+                    json={"diarized": self.current_text, "language": selected_lang_name,"prompt":prompts}
                 )
                 data = resp.json()
                 self.summary_task_id = data.get("task_id")
@@ -409,9 +420,9 @@ class FeatureWindow8(QWidget):
         self.processing_dots = (self.processing_dots + 1) % 4
         dots = "." * self.processing_dots
         if self.diarization_running:
-            self.transcript_box.setText(f"⏳ Processing{dots}")
+            self.summary_box.setPlaceholderText(f"⏳ Processing{dots}")
         elif self.summary_running:
-            self.summary_box.setText(f"⏳ Processing{dots}")
+            self.summary_box.setPlaceholderText(f"⏳ Processing{dots}")
 
     # --- Summary polling ---
     def check_summary_result(self):
@@ -474,6 +485,8 @@ class FeatureWindow8(QWidget):
                 if "window8" in config:
                     g = config["window8"]
                     self.setGeometry(QRect(g["x"], g["y"], g["w"], g["h"]))
+                if "window8_prompt" in config:
+                    self.text_box.setText(config["window8_prompt"])
             except Exception as e:
                 print("Error loading window position:", e)
 
@@ -495,6 +508,7 @@ class FeatureWindow8(QWidget):
                 config = {}
 
         config["window8"] = g_data
+        config["window8_prompt"] = self.text_box.toPlainText()
         with open(CONFIG_FILE, "w") as f:
             json.dump(config, f, indent=4)
     def apply_settings(self, config):
@@ -526,6 +540,7 @@ class FeatureWindow8(QWidget):
         self.transcript_box.setFont(font)
         self.download_summary_btn.setFont(font)
         self.download_transcript_btn.setFont(font)
+        self.text_box.setFont(font)
 class ChatInput(QTextEdit):
     send_signal = pyqtSignal()  # custom signal for "send"
 
@@ -793,6 +808,7 @@ class FeatureWindow7C(QWidget):
         self.alter_ans_label.setFont(font)
         self.alter_ans.setFont(font)
         self.model_dropdown.setFont(font)
+        self.history_box.setFont(font)
 
 
 
