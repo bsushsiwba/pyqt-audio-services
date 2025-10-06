@@ -60,6 +60,7 @@ class QueryRequest(BaseModel):
     tone: str = "Neutral"
     word_limit: Optional[int] = None
     num_alternatives: int = 1
+    model: str = "gpt-4o-mini"
 
 # ----------------- TOOL FUNCTIONS ----------------- #
 def get_info_from_document(query: str) -> str:
@@ -99,9 +100,13 @@ def process_query_background(task_id: str, req: QueryRequest):
             ))
 
         # Initialize agent (agent-centric design)
+        llm = ChatOpenAI(model=req.model, 
+                         temperature=0,
+                         )  # 👈 use selected model
+        print(req.model)
         agent = initialize_agent(
             tools,
-            LLM,
+            llm,
             agent=AgentType.OPENAI_FUNCTIONS,
             verbose=True
         )
@@ -130,7 +135,7 @@ def process_query_background(task_id: str, req: QueryRequest):
         - Word Limit: {req.word_limit if req.word_limit else "No limit"}
         - Provide exactly {req.num_alternatives} different phrasings of the answer
         """
-        final_answer = LLM.invoke(polish_prompt)
+        final_answer = llm.invoke(polish_prompt)
         RESULTS[task_id] = final_answer.content
 
     except Exception as e:
@@ -200,7 +205,7 @@ TRANSCRIPTS = {}
 summary_tasks = {}  # task_id: {"status": "Pending/Completed", "summary": str}
 
 # Simulated background summary function
-def generate_summary(task_id: str,diarized:str,language:str,prompt:str):
+def generate_summary(task_id: str,diarized:str,language:str,prompt:str,gpt_model:str):
     """Simulate time-consuming summary generation"""
     
 
@@ -208,7 +213,7 @@ def generate_summary(task_id: str,diarized:str,language:str,prompt:str):
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # or just assign your key as a string
     # Call ChatGPT
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=gpt_model,
         messages=[
             {"role": "system", "content": f"You have to summarize the paragrpah which will be provided to you as meeting of meetings in the following language:{language}"},
             {"role": "user", "content":  f"{prompt} here is the diarization {diarized}"}
@@ -225,6 +230,7 @@ class summary_trans(BaseModel):
     diarized:str
     language:str
     prompt:str
+    model:str
 # --- START SUMMARY ---
 @app.post("/start_summary")
 async def start_summary(background_tasks: BackgroundTasks,sum:summary_trans):
@@ -233,7 +239,7 @@ async def start_summary(background_tasks: BackgroundTasks,sum:summary_trans):
 
 
     # Run summary in background
-    background_tasks.add_task(generate_summary, task_id,sum.diarized,sum.language,sum.prompt)
+    background_tasks.add_task(generate_summary, task_id,sum.diarized,sum.language,sum.prompt,sum.model)
     
     return {"task_id": task_id, "status": "Started"}
 

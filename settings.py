@@ -312,6 +312,16 @@ class FeatureWindow8(QWidget):
             "Arabic": "ar-EG"
         }
         layout.addWidget(self.language_dropdown)
+        self.model_label = QLabel("Select Summary Model")
+        layout.addWidget(self.model_label)
+
+        self.model_dropdown = QComboBox()
+        self.model_dropdown.addItems([
+            "gpt-4o",
+            "gpt-4o-mini",
+            "gpt-3.5-turbo"
+        ])
+        layout.addWidget(self.model_dropdown)
         splitter = QSplitter(Qt.Vertical)
         # Transcript box (just loads from transcripts.txt)
         self.transcript_box = ClickableTextEdit(
@@ -323,6 +333,7 @@ class FeatureWindow8(QWidget):
         self.text_box.setPlaceholderText("Type Your Prompt for summerization")
         self.text_box.setWordWrapMode(QTextOption.WordWrap)  # enables wrapping
         splitter.addWidget(self.text_box)
+        
         # Summary box (API-based)
         self.summary_box = ClickableTextEdit(
             "Meeting Summary (Minutes)", 
@@ -389,7 +400,10 @@ class FeatureWindow8(QWidget):
 
                 resp = requests.post(
                     "http://127.0.0.1:8000/start_summary",
-                    json={"diarized": self.current_text, "language": selected_lang_name,"prompt":prompts}
+                    json={"diarized": self.current_text,
+                           "language": selected_lang_name,
+                           "prompt":prompts,
+                           "model":self.model_dropdown.currentText()}
                 )
                 data = resp.json()
                 self.summary_task_id = data.get("task_id")
@@ -637,7 +651,7 @@ class FeatureWindow7C(QWidget):
         self.GPT_select = QLabel(f"GPT Model")
         GPT_layout.addWidget(self.GPT_select)
         self.model_dropdown = QComboBox()
-        self.model_dropdown.addItems(["gpt-4o-mini", "gpt-4o"])
+        self.model_dropdown.addItems(["gpt-4o","gpt-3.5-turbo"])
         GPT_layout.addWidget(self.model_dropdown)
         lang_layout.addLayout(GPT_layout)
 
@@ -702,7 +716,8 @@ class FeatureWindow7C(QWidget):
             "transcription": transcription,
             "tone": tone,
             "word_limit": word_limit,
-            "num_alternatives": num_alternatives
+            "num_alternatives": num_alternatives,
+            "model": self.model_dropdown.currentText() 
         }
 
         try:
@@ -965,7 +980,7 @@ class FeatureWindow7B(QWidget):
         self.GPT_select = QLabel(f"GPT Model")
         GPT_layout.addWidget(self.GPT_select)
         self.model_dropdown = QComboBox()
-        self.model_dropdown.addItems(["gpt-4o-mini", "gpt-4o"])
+        self.model_dropdown.addItems(["gpt-4o","gpt-3.5-turbo"])
         GPT_layout.addWidget(self.model_dropdown)
         lang_layout.addLayout(GPT_layout)
 
@@ -1077,7 +1092,9 @@ class FeatureWindow7B(QWidget):
             "query": query,
             "tone": tone,
             "word_limit": word_limit,
-            "num_alternatives": num_alternatives
+            "num_alternatives": num_alternatives,
+            "model": self.model_dropdown.currentText() 
+
         }
 
         try:
