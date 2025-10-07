@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import  QObject, pyqtSignal,Qt,QThread,QRect,QTimer,pyqtSlot
 from PyQt5.QtGui import QFont,QTextOption,QDragEnterEvent,QDropEvent,QMouseEvent
-from ui.themes import dark_theme,light_theme,get_stylesheet,LANGUAGE_CODES,DIALECT_OPTIONS
+from ui.themes import dark_theme,light_theme,get_stylesheet,LANGUAGE_CODES,DIALECT_OPTIONS,GPT_Models
 from cloud_transcription.cloud_google import GCPTranscriptionWorker
 from cloud_transcription.cloud_azure import AzureTranscriptionWorker
 from cloud_transcription.cloud_xfyun import XFYunTranscriptionWorker
@@ -316,11 +316,7 @@ class FeatureWindow8(QWidget):
         layout.addWidget(self.model_label)
 
         self.model_dropdown = QComboBox()
-        self.model_dropdown.addItems([
-            "gpt-4o",
-            "gpt-4o-mini",
-            "gpt-3.5-turbo"
-        ])
+        self.model_dropdown.addItems(list(GPT_Models.keys()))
         layout.addWidget(self.model_dropdown)
         splitter = QSplitter(Qt.Vertical)
         # Transcript box (just loads from transcripts.txt)
@@ -397,13 +393,14 @@ class FeatureWindow8(QWidget):
                 selected_lang_name = self.language_dropdown.currentText()
                 selected_lang_code = self.language_map.get(selected_lang_name, "en-US")
                 prompts=self.text_box.toPlainText()
-
+                selected_front_name = self.model_dropdown.currentText()
+                model_name = GPT_Models.get(selected_front_name, selected_front_name)
                 resp = requests.post(
                     "http://127.0.0.1:8000/start_summary",
                     json={"diarized": self.current_text,
                            "language": selected_lang_name,
                            "prompt":prompts,
-                           "model":self.model_dropdown.currentText()}
+                           "model":model_name}
                 )
                 data = resp.json()
                 self.summary_task_id = data.get("task_id")
@@ -651,7 +648,7 @@ class FeatureWindow7C(QWidget):
         self.GPT_select = QLabel(f"GPT Model")
         GPT_layout.addWidget(self.GPT_select)
         self.model_dropdown = QComboBox()
-        self.model_dropdown.addItems(["gpt-4o","gpt-3.5-turbo"])
+        self.model_dropdown.addItems(list(GPT_Models.keys()))
         GPT_layout.addWidget(self.model_dropdown)
         lang_layout.addLayout(GPT_layout)
 
@@ -710,14 +707,15 @@ class FeatureWindow7C(QWidget):
 
         transcription = self.transcription_text
 
-
+        selected_front_name = self.model_dropdown.currentText()
+        model_name = GPT_Models.get(selected_front_name, selected_front_name)
         payload = {
             "query": query,
             "transcription": transcription,
             "tone": tone,
             "word_limit": word_limit,
             "num_alternatives": num_alternatives,
-            "model": self.model_dropdown.currentText() 
+            "model": model_name 
         }
 
         try:
@@ -980,7 +978,7 @@ class FeatureWindow7B(QWidget):
         self.GPT_select = QLabel(f"GPT Model")
         GPT_layout.addWidget(self.GPT_select)
         self.model_dropdown = QComboBox()
-        self.model_dropdown.addItems(["gpt-4o","gpt-3.5-turbo"])
+        self.model_dropdown.addItems(list(GPT_Models.keys()))
         GPT_layout.addWidget(self.model_dropdown)
         lang_layout.addLayout(GPT_layout)
 
@@ -1060,7 +1058,9 @@ class FeatureWindow7B(QWidget):
         # create worker to extract questions
         prompt = self.text_box.toPlainText()
         self.worker_thread = QThread()
-        self.worker = Question_extraction_worker(prompt, self.model_dropdown.currentText())
+        selected_front_name = self.model_dropdown.currentText()
+        model_name = GPT_Models.get(selected_front_name, selected_front_name)
+        self.worker = Question_extraction_worker(prompt, model_name)
         self.worker.moveToThread(self.worker_thread)
 
         self.worker_thread.started.connect(self.worker.run)
@@ -1690,7 +1690,7 @@ class FeatureWindow5(QWidget):
         self.GPT_select = QLabel(f"GPT Model")
         button_layout.addWidget(self.GPT_select)
         self.engine_dropdown = QComboBox()
-        self.engine_dropdown.addItems(["gpt-4o-mini", "gpt-4o"])
+        self.engine_dropdown.addItems(list(GPT_Models.keys()))
         button_layout.addWidget(self.engine_dropdown)
 
         top_layout.addLayout(button_layout, stretch=0)
@@ -1756,7 +1756,9 @@ class FeatureWindow5(QWidget):
 
         # Create worker + thread
         self.worker_thread = QThread()
-        self.worker = Polished_text_worker(text, prompt, self.engine_dropdown.currentText())
+        selected_front_name = self.engine_dropdown.currentText()
+        model_name = GPT_Models.get(selected_front_name, selected_front_name)
+        self.worker = Polished_text_worker(text, prompt, model_name)
         self.worker.moveToThread(self.worker_thread)
 
         # Run when thread starts
@@ -2544,7 +2546,7 @@ class FeatureWindow2(QWidget):
         self.GPT_select = QLabel(f"GPT Model")
         button_layout.addWidget(self.GPT_select)
         self.engine_dropdown = QComboBox()
-        self.engine_dropdown.addItems(["gpt-4o-mini", "gpt-4o"])
+        self.engine_dropdown.addItems(list(GPT_Models.keys()))
         button_layout.addWidget(self.engine_dropdown)
 
         top_layout.addLayout(button_layout, stretch=0)
@@ -2613,7 +2615,9 @@ class FeatureWindow2(QWidget):
 
         # Create worker + thread
         self.worker_thread = QThread()
-        self.worker = Polished_text_worker(text, prompt, self.engine_dropdown.currentText())
+        selected_front_name = self.engine_dropdown.currentText()
+        model_name = GPT_Models.get(selected_front_name, selected_front_name)
+        self.worker = Polished_text_worker(text, prompt, model_name)
         self.worker.moveToThread(self.worker_thread)
 
         # Run when thread starts
@@ -2987,8 +2991,6 @@ class FeatureWindow1(QWidget):
             device_info2 = self.settings_manager.get("input_win4", {})
             device_index2 = device_info2.get("index", None)
             device_channel2=device_info2.get("channels", None)
-            #print(device_index)
-            #print(device_index2)
 
             selected_engine = self.engine_dropdown.currentText()
             self.speaker_thread = QThread()

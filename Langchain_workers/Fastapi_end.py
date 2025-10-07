@@ -110,7 +110,7 @@ def process_query_background(task_id: str, req: QueryRequest):
             agent=AgentType.OPENAI_FUNCTIONS,
             verbose=True
         )
-
+        print("Actual Model Working: ",req.model)
         # Step 1: Agent retrieves relevant context
         raw_response = agent.invoke(req.query)
         if isinstance(raw_response, str):

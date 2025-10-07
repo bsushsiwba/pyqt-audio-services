@@ -91,5 +91,6 @@
     "window5_prompt": "polish this text ",
     "window3_prompt": "translate the following text in to the provided language\n and make is humerous",
     "window7B_prompt": "extract questions and write \"from transcription \" in the end of question",
-    "window6_prompt": "change the sentence to humourous sense"
+    "window6_prompt": "change the sentence to humourous sense",
+    "window8_prompt": "make it humerous"
 }
