@@ -80,7 +80,8 @@ class SettingsWindow(QWidget):
         # Font Family
         self.font_dropdown = QFontComboBox()
         self.font_dropdown.setCurrentFont(QFont(self.settings_manager.get("font", "Arial")))
-        layout.addWidget(QLabel("Font Family"))
+        self.font_family=QLabel("Font Family")
+        layout.addWidget(self.font_family)
         layout.addWidget(self.font_dropdown)
         self.font_dropdown.currentFontChanged.connect(lambda f: self.settings_manager.set_setting("font", f.family()))
 
@@ -88,7 +89,8 @@ class SettingsWindow(QWidget):
         self.font_size_spin = QSpinBox()
         self.font_size_spin.setRange(8, 72)
         self.font_size_spin.setValue(self.settings_manager.get("font_size", 12))
-        layout.addWidget(QLabel("Font Size"))
+        self.font_size_name=QLabel("Font Size")
+        layout.addWidget(self.font_size_name)
         layout.addWidget(self.font_size_spin)
         self.font_size_spin.valueChanged.connect(lambda v: self.settings_manager.set_setting("font_size", v))
 
@@ -99,7 +101,8 @@ class SettingsWindow(QWidget):
             "DemiBold", "Bold", "ExtraBold", "Black"
         ])
         self.weight_dropdown.setCurrentText(self.settings_manager.get("weight", "Normal"))
-        layout.addWidget(QLabel("Font Weight"))
+        self.font_weight_name=QLabel("Font Weight")
+        layout.addWidget(self.font_weight_name)
         layout.addWidget(self.weight_dropdown)
         self.weight_dropdown.currentTextChanged.connect(lambda t: self.settings_manager.set_setting("weight", t))
 
@@ -126,8 +129,8 @@ class SettingsWindow(QWidget):
             idx = self.input_win1.findText(match_text)
             if idx >= 0:
                 self.input_win1.setCurrentIndex(idx)
-
-        layout.addWidget(QLabel("Window 1 Input Source"))
+        self.input_source1_name=QLabel("Window 1 Input Source")
+        layout.addWidget(self.input_source1_name)
         layout.addWidget(self.input_win1)
 
         def save_input_win1(text):
@@ -149,7 +152,8 @@ class SettingsWindow(QWidget):
             if idx >= 0:
                 self.input_win4.setCurrentIndex(idx)
 
-        layout.addWidget(QLabel("Window 4 Input Source"))
+        self.input_source4_name=QLabel("Window 4 Input Source")
+        layout.addWidget(self.input_source4_name)
         layout.addWidget(self.input_win4)
 
         def save_input_win4(text):
@@ -242,6 +246,11 @@ class SettingsWindow(QWidget):
         self.color_btn.setFont(font)
         self.input_win1.setFont(font)
         self.input_win4.setFont(font)
+        self.input_source1_name.setFont(font)
+        self.input_source4_name.setFont(font)
+        self.font_size_name.setFont(font)
+        self.font_family.setFont(font)
+        self.font_weight_name.setFont(font)
 
 # ----------------- Dummy Feature Windows -----------------
 class ClickableTextEdit(QTextEdit):
@@ -552,6 +561,8 @@ class FeatureWindow8(QWidget):
         self.download_summary_btn.setFont(font)
         self.download_transcript_btn.setFont(font)
         self.text_box.setFont(font)
+        self.model_label.setFont(font)
+        self.model_dropdown.setFont(font)
 class ChatInput(QTextEdit):
     send_signal = pyqtSignal()  # custom signal for "send"
 
